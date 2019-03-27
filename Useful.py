@@ -1,11 +1,13 @@
 
 import random
+import math
 import pylab
 def matrixPrinter(A):
+    # 2 by 2 only
     for i in range(len(A)):
         line = ""
         for j in range(len(A[0])):
-            line += str(A[i][j])
+            line += str(A[i][j]) + " "
         print(line)
 q = 0.5
 def RELU(x):
@@ -49,6 +51,7 @@ def MVM(A, v):
     >>> MVM(W,v)
     [0.05]
     """
+    # for 2 by 2, since thats the only kind i know
     result = []
     for i in range(len(A)):
         component = 0
