@@ -38,7 +38,7 @@ if __name__ == "__main__":
 		# 	[[0, 0]]
 		# 	]
 
-		d = copy.deepcopy(w)
+		dw = copy.deepcopy(w)
 
 		# later iterate over many test case in a particular sample
 		test_case = test_samples[i][0]
@@ -52,33 +52,47 @@ if __name__ == "__main__":
 		a = compute_output(w, a, numLayers-1)
 
 		# iterate through all the edges in the last layer
-		d[1][0][0] = 2 * (a[2][0] - y[0]) * a[1][0]
-		d[1][0][1] = 2 * (a[2][0] - y[0]) * a[1][1]
+		# dw[numLayers-1][0][0] = 2 * (a[2][0] - y[0]) * a[1][0]
+		# dw[numLayers-1][0][1] = 2 * (a[2][0] - y[0]) * a[1][1]
+		#
+		# dw[numLayers-1][1][0] = 2 * (a[2][0] - y[0]) * a[1][0]
+		# dw[numLayers-1][1][1] = 2 * (a[2][0] - y[0]) * a[1][1]
 
-		d[1][1][0] = 2 * (a[2][0] - y[0]) * a[1][0]
-		d[1][1][1] = 2 * (a[2][0] - y[0]) * a[1][1]
-
+		# one of these should be numOutputs?
+		# for i1 in range(len(w[numLayers-1])):
+		for i1 in range(numOutputs):
+			for i2 in range(len(w[numLayers-2])):
+				dw[numLayers-2][i1][i2] = 2 * (a[numLayers-1][i1] - y[i1]) * a[numLayers-2][i2]
 
 
 		# can use the d value of the layer in front to calculate backwards
-		# d[0][0][0] = 2 * (a[2][0] - y[0]) * w[1][0][0] * a[0][0]
-		# d[0][1][0] = 2 * (a[2][0] - y[0]) * w[1][0][1] * a[0][0]
+		# dw[0][0][0] = dw[1][0][0] / a[1][0] * w[1][0][0] * a[0][0]
+		# dw[0][1][0] = dw[1][0][1] / a[1][1] * w[1][0][1] * a[0][0]
 
-		# d[0][0][0] = d[1][0][0] / a[1][0] * w[1][0][0] * a[0][0]
-		# d[0][1][0] = d[1][0][1] / a[1][1] * w[1][0][1] * a[0][0]
+		# need to calculate da values to calculate the next dw values
 
-		d[0][0][0] = (d[1][0][0] / a[1][0] * w[1][0][0] + d[1][1][0] / a[1][0] * w[1][1][0]) * a[0][0]
-		d[0][1][0] = (d[1][0][1] / a[1][1] * w[1][0][1] + d[1][1][1] / a[1][1] * w[1][1][1]) * a[0][0]
+		clayer = 2
+		something = 2
+		da = [0 for k in range(0, something)]
+		for k1 in range(0, something):
+			# da[0] = dw[1][0][0] / a[1][0] * w[1][0][0] + dw[1][1][0] / a[1][0] * w[1][1][0]
+			for k2 in range(len(w)):
+				da[0] += dw[clayer][k1][k2] / a[clayer][k2] * w[clayer][k2][k1] * w[1][k1][k2]
 
-		d[0][0][1] = (d[1][0][0] / a[1][0] * w[1][0][0] + d[1][1][0] / a[1][0] * w[1][1][0]) * a[0][1]
-		d[0][1][1] = (d[1][0][1] / a[1][1] * w[1][0][1] + d[1][1][1] / a[1][1] * w[1][1][1]) * a[0][1]
+
+
+		dw[0][0][0] = (dw[1][0][0] / a[1][0] * w[1][0][0] + dw[1][1][0] / a[1][0] * w[1][1][0]) * a[0][0]
+		dw[0][1][0] = (dw[1][0][1] / a[1][1] * w[1][0][1] + dw[1][1][1] / a[1][1] * w[1][1][1]) * a[0][0]
+
+		dw[0][0][1] = (dw[1][0][0] / a[1][0] * w[1][0][0] + dw[1][1][0] / a[1][0] * w[1][1][0]) * a[0][1]
+		dw[0][1][1] = (dw[1][0][1] / a[1][1] * w[1][0][1] + dw[1][1][1] / a[1][1] * w[1][1][1]) * a[0][1]
 
 		total_cost = compute_cost(a, numLayers-1, numOutputs, y)
 		c = - 1 / 100
 		for i1 in range(0, len(w)):
-			for i2 in range(len(w[i1])):
+			for i2 in range(0, len(w[i1])):
 				for i3 in range(0, len(w[i1][i2])):
-					w[i1][i2][i3] += c * d[i1][i2][i3]
+					w[i1][i2][i3] += c * dw[i1][i2][i3]
 
 		xVals.append(i)
 		costVals.append(total_cost)
