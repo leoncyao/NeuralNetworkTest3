@@ -3,7 +3,8 @@ from Useful import *
 
 # Q = [[1, 3, 5], [4, 2, 1]]
 # Q = [[1, 3], [2, 4]]
-Q = [[42]]
+# Q = [[42]]
+Q = [[math.pi]]
 # Q = [[math.pi, 2.7], [1, 3]]
 
 # Will need to change this later. numInputs should be the
@@ -15,7 +16,7 @@ numTrials = 100
 numTests = 1
 test_samples = createQTests(numTrials, numTests, numInputs, numOutputs, Q, 1)
 
-print(test_samples)
+# print(test_samples)
 if __name__ == "__main__":
 	# w = [
 	# 	[[2, 3], [5, 4]], # multiply this row by in 1 by 1 input vector (layer0) to get the layer1 activations
@@ -27,32 +28,31 @@ if __name__ == "__main__":
 	# 	[[0], [0]]
 	# 	  ]
 	w = [
-		[[1], [1]],
-		[[1, 1]],
-		[[1]]
+		[[5]],
+		[[4]],
 		]
-	# need plus 1 for input layer
+
+	# need plus 1 for input layer, should always be greater equal to 2
 	numLayers = len(w) + 1
-	# w = [
-	# 	[[1], [2]], # multiply this row by in 1 by 1 input vector (layer0) to get the layer1 activations
-	# 	[[3, 4]] # multiply this row by the 2 by 1 layer1 activation to get output layer
-	# 	 ]
 	output_Vals = [[] for i in range(numOutputs)]
 	yVals = [[] for i in range(numOutputs)]
 
 	for i in range(numTrials):
 		# need to change 100 later
-		a = [[0 for j in range(100)] for k in range(numLayers + 1)]
+		a = [[0 for j in range(len(w[k]))] for k in range(numLayers-1)]
+		# a.insert(0, [0])
+		test_case = test_samples[i][0]
+		a.insert(0, test_case[0])
 		da = copy.deepcopy(a)
 		dw = copy.deepcopy(w)
 
 		# later iterate over many test case in a particular sample
-		test_case = test_samples[i][0]
-		a[0] = test_case[0] # inputs
+
+		# a[0] = test_case[0] # inputs
+
 		y = test_case[1] # labels
 
-		# need a for loop to iterate activation computations
-
+		# loops through layers to compute final activation (output)
 		a = compute_output(w, a, numLayers-1)
 
 		# iterate through all the edges in the last layer
@@ -86,16 +86,19 @@ if __name__ == "__main__":
 		# 	for e2 in range(len(a[2])):
 		# 		dw[layer_num-1][e1][e2] = da[e1][e2] * a[layer_num-1][e2]
 
+		# starts at second last layer, stops at second (first layer is inputs)
 		for layer_num in range(numLayers-2, 0, -1):
-			# fixing layer number 1
-			for e1 in range(len(a[1])):
-				for e2 in range(len(a[2])):
+			# for e1 in range(len(a[1])):
+			# 	for e2 in range(len(a[2])):
+			for e1 in range(len(a[layer_num])):
+				for e2 in range(len(a[layer_num+1])):
 					# da[1][e] += (dw[1][0][0] / a[1][e] * w[1][0][0] + dw[1][1][0] / a[1][e] * w[1][1][0])
 					# da[1][e1] += dw[1][e1][e2] / a[1][e1] * w[1][e1][e2]
 					da[layer_num][e1] += dw[layer_num][e1][e2] / a[layer_num][e1] * w[layer_num][e1][e2]
 			# da[1][0] = (dw[1][0][0] / a[1][0] * w[1][0][0] + dw[1][1][0] / a[1][0] * w[1][1][0])
 			# da[1][1] = (dw[1][0][1] / a[1][1] * w[1][0][1] + dw[1][1][1] / a[1][1] * w[1][1][1])
 
+			print(da)
 			for e1 in range(len(a[1])):
 				for e2 in range(len(a[2])):
 					dw[layer_num-1][e1][e2] = da[e1][e2] * a[layer_num-1][e2]
@@ -123,7 +126,7 @@ if __name__ == "__main__":
 			output_Vals[q].append(a[numLayers-1][q])
 		for q in range(0, numOutputs):
 			yVals[q].append(y[q])
-	# print(w)
+	print(w)
 	for i in range(numOutputs):
 		pylab.subplot((numOutputs + 1) * 100 + 11 + i)
 		pylab.plot(xVals, yVals[i], 'b--', label="yVals[{}]".format(i))
