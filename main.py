@@ -19,18 +19,8 @@ test_samples = createQTests(numTrials, numTests, numInputs, numOutputs, Q, 1)
 # test_labels = [test_samples[i] * math.pi for i in range(numSamples)]
 
 
-def compute_output(matrix, activations, num_layers):
-    for num_layer in range(0, num_layers):
-        # a[k+1] = w[k] * a[k]
-        a[num_layer + 1] = MVM(w, a[num_layer])
-    return a
 
-def compute_cost(activations, num_layers, num_outputs):
-    tc = 0
-    for o1 in range(0, num_outputs):
-        tc += pow(activations[num_layers][o1]- y[o1], 2)
-        # can change cost function later
-    return tc
+
 if __name__ == "__main__":
 
     # '''
