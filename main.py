@@ -8,7 +8,6 @@ numTrials = 100
 numTests = 1
 # test_samples = [random.random() for i in range(numSamples)]
 
-# lol i don't really need these
 Q = [[1, 3], [4, 2]]
 # Q = [[math.pi]]
 # Will need to change this later. numInputs should be the
@@ -43,12 +42,7 @@ if __name__ == "__main__":
         # test_input = test_case[0][0]
 
         a[0]  = test_case[0]
-
         a = compute_output(w, a, numLayers)
-
-        # for k in range(0, numLayers):
-        #     # a[k+1] = w[k] * a[k]
-        #     a[k+1] = MVM(w, a[k])
 
         y = test_case[1]
 
