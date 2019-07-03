@@ -2,9 +2,9 @@ from Useful import *
 
 
 # Q = [[1, 3, 5], [4, 2, 1]]
-# Q = [[1, 3], [2, 4]]
+Q = [[1, 3], [2, 4]]
 # Q = [[42]]
-Q = [[math.pi]]
+# Q = [[math.pi]]
 # Q = [[math.pi, 2.7], [1, 3]]
 
 # Will need to change this later. numInputs should be the
@@ -23,14 +23,14 @@ if __name__ == "__main__":
 	# 	[[1, 1], [3, 1]],
 	# 	[[1, 1], [3, 1]] # multiply this row by the 2 by 1 layer1 activation to get output layer
 	# 	 ]
-	# w = [
-	# 	[[0], [0]],
-	# 	[[0], [0]]
-	# 	  ]
 	w = [
-		[[5]],
-		[[4]],
-		]
+		[[0], [0]],
+		[[0], [0]]
+		  ]
+	# w = [
+	# 	[[5]],
+	# 	[[4]],
+	# 	]
 
 	# need plus 1 for input layer, should always be greater equal to 2
 	numLayers = len(w) + 1
@@ -65,6 +65,8 @@ if __name__ == "__main__":
 		# For last layer
 		for i1 in range(numOutputs):
 			for i2 in range(len(w[numLayers-2])):
+				t = list(dw)
+				k = list(a)
 				dw[numLayers-2][i1][i2] = 2 * (a[numLayers-1][i1] - y[i1]) * a[numLayers-2][i2]
 
 		# can use the d value of the layer in front to calculate backwards
